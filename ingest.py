@@ -5,7 +5,7 @@ from typing import Any, Dict, List
 
 import certifi
 from dotenv import load_dotenv
-#from langchain_chroma import Chroma
+# from langchain_chroma import Chroma
 from langchain_classic.text_splitter import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from langchain_openai import OpenAIEmbeddings
@@ -29,7 +29,7 @@ embeddings = OpenAIEmbeddings(
     chunk_size=50,
     retry_min_seconds=10,
 )
-#vectorstore = Chroma(persist_directory="chroma_db", embedding_function=embeddings)
+# vectorstore = Chroma(persist_directory="chroma_db", embedding_function=embeddings)
 vectorstore = PineconeVectorStore(
     index_name="langchain-doc-index", embedding=embeddings
 )
