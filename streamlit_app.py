@@ -347,15 +347,20 @@ def process_query(query: str):
         answer = result["answer"]
         context_docs = result["context"]
 
-        # Format sources
+        # Format sources and remove duplicates based on URL
+        seen_urls = set()
         sources = []
         for doc in context_docs:
-            sources.append(
-                {
-                    "url": doc.metadata.get("source", "Unknown"),
-                    "content": doc.page_content,
-                }
-            )
+            url = doc.metadata.get("source", "Unknown")
+            # Only add if we haven't seen this URL before
+            if url not in seen_urls:
+                seen_urls.add(url)
+                sources.append(
+                    {
+                        "url": url,
+                        "content": doc.page_content,
+                    }
+                )
 
         # Add assistant message to history
         st.session_state.messages.append(
@@ -469,11 +474,6 @@ if len(st.session_state.messages) > 0:
                         '<div class="sources-container">', unsafe_allow_html=True
                     )
                     for i, source in enumerate(message["sources"], 1):
-                        # Clean the content preview
-                        content_preview = (
-                            source["content"][:300].replace("\n", " ").strip()
-                        )
-
                         st.markdown(
                             f"""
                         <div class="source-box">
